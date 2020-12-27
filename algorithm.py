@@ -1,8 +1,10 @@
-def get_min_distance(distance, unvisited):
+import pygame
+
+def get_min_distance(distance, visited):
 	minimum = next(iter(distance))
 
 	for item in distance:
-		if distance[item] < distance[minimum] and not unvisited[item]:
+		if distance[item] < distance[minimum] and not visited[item]:
 			minimum = item
 
 	return minimum
@@ -19,19 +21,24 @@ def find_shortest_path(board):
 	start = board.start
 	end = board.end
 
-	unvisited = {col: False for row in grid for col in row}
+	visited = {col: False for row in grid for col in row}
 
 	distance = {col: float("inf") for row in grid for col in row}
 	distance[start] = 0
 
 	from_list = {}
 
-	while any(unvisited):
-		current = get_min_distance(distance, unvisited)
+	while any(visited):
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				return
+
+		current = get_min_distance(distance, visited)
 
 		if current == end:
 			draw_path(from_list, start, end)
-			return True
+			return
 
 		for neighbour in current.get_neighbours(grid):
 			temp_dist = distance[current] + 1
@@ -41,6 +48,9 @@ def find_shortest_path(board):
 				from_list[neighbour] = current
 
 		current.set_visited()
-		unvisited[current] = True
+		current.draw()
+		start.set_start()
+		start.draw()
+		pygame.display.update()
+		visited[current] = True
 
-	return False

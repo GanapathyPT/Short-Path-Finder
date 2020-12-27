@@ -15,6 +15,9 @@ class Item():
 		self.x = self.row * self.ITEM_WIDTH
 		self.y = self.col * self.ITEM_WIDTH
 
+	def is_wall(self):
+		return self.color == BLACK
+
 	def set_start(self):
 		self.color = GREEN
 
@@ -33,16 +36,16 @@ class Item():
 	def get_neighbours(self, grid):
 		neighbours = []
 
-		if self.row > 0 and grid[self.row - 1][self.col].color != BLACK:
+		if self.row > 0 and not grid[self.row - 1][self.col].is_wall():
 			neighbours.append(grid[self.row - 1][self.col])
 
-		if self.row < ROWS - 1 and grid[self.row + 1][self.col].color != BLACK:
+		if self.row < ROWS - 1 and not grid[self.row + 1][self.col].is_wall():
 			neighbours.append(grid[self.row + 1][self.col])
 
-		if self.col > 0 and grid[self.row][self.col - 1].color != BLACK:
+		if self.col > 0 and not grid[self.row][self.col - 1].is_wall():
 			neighbours.append(grid[self.row][self.col - 1])
 
-		if self.col < ROWS - 1 and grid[self.row][self.col + 1].color != BLACK:
+		if self.col < ROWS - 1 and not grid[self.row][self.col + 1].is_wall():
 			neighbours.append(grid[self.row][self.col + 1])
 
 		return neighbours
@@ -56,6 +59,12 @@ class Item():
 
 	def get_pos(self):
 		return self.x, self.y
+
+	def __hash__(self):
+		return self.x + self.y
+
+	def __eq__(self, other):
+		return self.row == other.row and self.col == other.col
 
 	def __str__(self):
 		return f"{self.row}, {self.col}"
