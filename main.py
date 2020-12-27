@@ -2,10 +2,11 @@ import pygame
 from constants import *
 from components import *
 from helper import *
-from algorithm import find_shortest_path
+from dijkstra import find_shortest_path
+from a_star import find_path
 
 pygame.init()
-pygame.display.set_caption("Dijkstra's Algorithm")
+pygame.display.set_caption("Path Finder")
 screen = pygame.display.set_mode([ WIDTH, WIDTH ])
 screen.fill(BLACK)
 
@@ -43,6 +44,12 @@ def main():
 			elif event.type == pygame.KEYDOWN:
 				if event.key == pygame.K_SPACE:
 					find_shortest_path(board)
+					board.start.set_start()
+					board.end.set_end()
+					disabled = True
+
+				elif event.key == pygame.K_RETURN:
+					find_path(board)
 					board.start.set_start()
 					board.end.set_end()
 					disabled = True

@@ -31,3 +31,9 @@ def handle_mouse_event(board):
 
 	elif grid[row][col] != start and grid[row][col] != end:
 		grid[row][col].set_wall()
+
+def draw_path(from_list, start, end):
+	if end == start:
+		return
+	end.set_path()
+	draw_path(from_list, start, from_list[end])
