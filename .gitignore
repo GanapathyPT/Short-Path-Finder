@@ -1,2 +1,5 @@
 # local cache
 /__pycache__
+
+# env
+/venv
