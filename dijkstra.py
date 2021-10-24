@@ -2,51 +2,51 @@ import pygame
 from helper import draw_path
 
 
-def get_min_distance(distance, visited):
-    minimum = list(distance.keys())[0]
+def get_vertex_with_min_distance(vertices, distance_dict):
+    min_dist_vertex = vertices[0]
 
-    for item in distance:
-        if distance[item] < distance[minimum] and not visited[item]:
-            minimum = item
+    for vertex in vertices:
+        if distance_dict[vertex] < distance_dict[min_dist_vertex]:
+            min_dist_vertex = vertex
 
-    return minimum
+    return min_dist_vertex
 
 
-def find_shortest_path(board):
+def dijkstra(board):
     grid = board.grid
     start = board.start
     end = board.end
 
-    visited = {col: False for row in grid for col in row}
+    vertex_set = []
+    distance_set = {}
+    prev_set = {}
 
-    distance = {col: float("inf") for row in grid for col in row}
-    distance[start] = 0
+    for row in grid:
+        for col in row:
+            distance_set[col] = float("inf")
+            prev_set[col] = None
+            vertex_set.append(col)
 
-    from_list = {}
+    distance_set[start] = 0
 
-    while any(visited):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                return
+    while len(vertex_set) > 0:
+        current = get_vertex_with_min_distance(vertex_set, distance_set)
 
-        current = get_min_distance(distance, visited)
-        print(current)
-
-        if current == end:
-            draw_path(from_list, start, end)
+        if current == end and distance_set[current] != float('inf'):
+            draw_path(prev_set, start, end)
             return
 
+        vertex_set.remove(current)
+
         for neighbour in current.get_neighbours(grid):
-            temp_dist = distance[current] + 1
-            if temp_dist < distance[neighbour]:
-                distance[neighbour] = temp_dist
+            if neighbour in vertex_set:
+                temp_dist = distance_set[current] + 1
+                if temp_dist < distance_set[neighbour]:
+                    distance_set[neighbour] = temp_dist
+                    prev_set[neighbour] = current
 
-                from_list[neighbour] = current
-
-        current.set_visited()
-        current.draw()
-        start.set_start()
-        start.draw()
-        pygame.display.update()
-        visited[current] = True
+                    current.set_visited()
+                    current.draw()
+                    start.set_start()
+                    start.draw()
+                    pygame.display.update()

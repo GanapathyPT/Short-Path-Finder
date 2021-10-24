@@ -2,8 +2,8 @@ import pygame
 from constants import *
 from components import Board
 from helper import *
-from dijkstra import find_shortest_path
-from a_star import find_path
+from dijkstra import dijkstra
+from a_star import a_star
 
 # Initial setup of window
 pygame.init()
@@ -18,7 +18,6 @@ def main():
     disabled = False
 
     board = Board(screen)
-
     while running:
         board.draw()
 
@@ -30,7 +29,7 @@ def main():
                 disabled = False
                 board = Board(screen)
 
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN and not disabled:
                 if event.button == 1:
                     dragging = True
                     handle_mouse_event(board)
@@ -43,16 +42,16 @@ def main():
 
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    find_shortest_path(board)
+                    disabled = True
+                    dijkstra(board)
                     board.start.set_start()
                     board.end.set_end()
-                    disabled = True
 
                 elif event.key == pygame.K_RETURN:
-                    find_path(board)
+                    disabled = True
+                    a_star(board)
                     board.start.set_start()
                     board.end.set_end()
-                    disabled = True
 
     pygame.quit()
 

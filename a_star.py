@@ -8,7 +8,7 @@ def heuristic(pos1, pos2):
     return abs(pos1.row - pos2.row) + abs(pos2.col - pos1.col)
 
 
-def find_path(game):
+def a_star(game):
     grid = game.grid
     start = game.start
     end = game.end
